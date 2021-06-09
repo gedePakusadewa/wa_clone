@@ -22,5 +22,9 @@ class Accounts extends Model
         return Accounts::addNewData('bookbook', 'qwer1234');
     }
 
+    static function getOneData($column, $keywords){
+        return Accounts::where($column, "=", $keywords)->first();
+    }
+
 
 }

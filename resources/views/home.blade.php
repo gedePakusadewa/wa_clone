@@ -57,6 +57,8 @@
           <div class = "border" >
             <div style = "width:59px; padding:5px;">
               <img style = "border-radius: 50%;" src = "/photo-profile/kapou-profile.jpg" width = "100px" />
+              <div id = "account-{{$dataAccount->id}}" class = "account-section">{{$dataAccount->username}}
+              </div>
             </div>
           </div>
           <div>
@@ -65,32 +67,33 @@
             </form>
           </div>
           <div style = "height:500px; overflow:auto;">
-            @for($i = 0; $i < 7; $i++)  
-              <div id = "user-{{$i}}" class = "flex-row" style = "padding:6px; border-bottom:1px solid black; height:70px;">
+            @foreach($friendList as $data)  
+              <div id = "user-{{$data->id}}" class = "flex-row" style = "padding:6px; border-bottom:1px solid black; height:70px;">
                 <div style = "width:65px; padding:5px;">
-                  <img id = "user-{{$i}}-img" style = "border-radius: 50%;" src = "/photo-profile/kapou-profile.jpg" width = "100px" />
+                  <img id = "user-{{$data->id}}-img" style = "border-radius: 50%;" src = "/photo-profile/kapou-profile.jpg" width = "100px" />
                 </div>
                 <div class = "flex-column">
-                  <div id = "user-{{$i}}-username">Mokfij nsj {{$i}}
+                  <div id = "user-{{$data->id}}-username">{{$data->username}}
                   </div>
-                  <div id = "user-{{$i}}-message">hajsk cnksic mdkicml ksockdm sjick..
+                  <div id = "user-{{$data->id}}-message">this feature on progress
                   </div>
                 </div>
               </div>
-            @endfor
+            @endforeach
           </div>
         </div>
       </div>
-      <div class = "chat-section" style = "display:none;">
-        <div id = "blank_home" class = "center-black-home">
+      <div id = "blank_home" class = "chat-section" style = "display:none" >
+        <div class = "center-black-home">
           <img style = "width:300px;" src = "/icon/blank_wa.jpg" alt = "blank logo" height = "300px"/>
           <h1>Keep your phone connected</h1>
           <p>WhatsApp connects to your phone to sync messages. To reduce data usage, connect your phone to Wi-Fi.</p>
         </div>
       </div>
 
-      <div id = "tes212">
+      <div id = "message-block">
       </div>
+
     </div>
   </body>
   <script src = "https://code.jquery.com/jquery-2.2.4.min.js"
@@ -107,12 +110,13 @@
 
     // });
 
-    function tes112(dta){
+    function getDataFromServer(friendID, accountID){
       $.ajax({
         url: '/tes123',
         type: 'get',
         data: { 
-          code : '' + dta
+          friend_id : '' + friendID,
+          account_id: '' + accountID
         },
 
         success:function(dataServer){
@@ -124,12 +128,21 @@
       });  
     }
 
+    function setMessageBlock($dataMessage){
+
+    }
+
     function getIdFromDataID(dta = ""){
       return dta.substr(5, 1);
     }
 
     function setNewData(dta){
       document.getElementById('tes212').innerHTML = dta;
+    }
+
+    function getAccountID(){
+      //console.log(document.getElementsByClassName('account-section')[0].getAttribute('id').substr(8, 1));
+      return document.getElementsByClassName('account-section')[0].getAttribute('id').substr(8, 1);
     }
 
     window.addEventListener("load", function(){
@@ -141,8 +154,10 @@
         if(target.getAttribute('id') !== null){
           if(target.getAttribute('id').includes('user-')){
             //console.log(typeof(target.getAttribute('id')));
-            tes112(getIdFromDataID(target.getAttribute('id')));
+            //tes112(getIdFromDataID(target.getAttribute('id')));
             //console.log(getIdFromDataID(target.getAttribute('id')));
+            //getAccountID();
+            getDataFromServer(getIdFromDataID(target.getAttribute('id')), getAccountID());
           }else{
             console.log('false');
           }

@@ -19,10 +19,13 @@ class friend_list extends Model
     }
 
     static function addSampleData(){
-        return friend_list::addNewData('1', '2');
+        return friend_list::addNewData('1', '3');
     }
 
-    // static function getFriendsOfOneAccount($account_id){
-    //     return Accounts::
-    // }
+    static function getFriendsOfOneAccount($account_id){
+        return friend_list::select('accounts.id', 'accounts.username')
+                        ->join('accounts', 'friend_lists.friend_account_id', '=', 'accounts.id')
+                        ->where('friend_lists.account_id', '=', $account_id)
+                        ->get();
+    }
 }
