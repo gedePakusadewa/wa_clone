@@ -16,6 +16,8 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'getHomePage'])->name('home_page');
 
+Route::get('/tes123', [HomeController::class, 'tes123'])->name('tes123');
+
 Route::fallback(function(){
     return redirect()->route('home_page');
 });
