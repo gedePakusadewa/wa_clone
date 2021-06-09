@@ -20,6 +20,10 @@ class Message extends Model
     }
 
     static function addSampleData(){
-        return Message::addNewData('1', '2', 'Hai!!!!');
+        return Message::addNewData('3', '1', 'hai luke, can i help you?');
+    }
+
+    static function getAllMessageOneAccount(){
+        
     }
 }

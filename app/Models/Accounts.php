@@ -21,4 +21,6 @@ class Accounts extends Model
     static function addSampleData(){
         return Accounts::addNewData('bookbook', 'qwer1234');
     }
+
+
 }
