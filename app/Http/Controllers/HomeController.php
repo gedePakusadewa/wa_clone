@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Accounts;
 
 class HomeController extends Controller
 {
     public function getHomePage(){
         return view('home');
+        //Accounts::addSampleData();
     }
 
     public function tes123(){

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Accounts extends Model
 {
     use HasFactory;
-    protected $table = 'wa_clone';
+    protected $table = 'accounts';
     protected $fillable = ['id', 'created_at', 'username', 'passwd'];
 
     static function addNewData($username, $passwd){
@@ -19,6 +19,6 @@ class Accounts extends Model
     }
 
     static function addSampleData(){
-        return Accounts::addNewData('deltagod', 'qwer1234');
+        return Accounts::addNewData('bookbook', 'qwer1234');
     }
 }
