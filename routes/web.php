@@ -16,7 +16,9 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'getHomePage'])->name('home_page');
 
-Route::get('/tes123', [HomeController::class, 'tes123'])->name('tes123');
+Route::get('/get-client-data', [HomeController::class, 'sendDataChatToClient'])->name('get_client_data');
+
+Route::get('/send-and-get-new-data', [HomeController::class, 'saveAndSentNewDataToClient']);
 
 Route::fallback(function(){
     return redirect()->route('home_page');

@@ -62,7 +62,7 @@
             </div>
           </div>
           <div>
-            <form action = "">
+            <form>
               <input type = "search" name = "keywords" placeholder = "search or start a new conversation" autocomplete = "false"/>
             </form>
           </div>
@@ -83,6 +83,7 @@
           </div>
         </div>
       </div>
+
       <div id = "blank_home" class = "chat-section" style = "display:none" >
         <div class = "center-black-home">
           <img style = "width:300px;" src = "/icon/blank_wa.jpg" alt = "blank logo" height = "300px"/>
@@ -91,7 +92,14 @@
         </div>
       </div>
 
-      <div id = "message-block">
+      <div id = "chat_section" class = "fle-column" style = "display:none" >
+        <div id = "message-block">
+        </div>
+        <div style = "width:auto;padding:10px; background-color:#f0f0f0;">
+          <form id = "formChat" name = "">
+            <input type = "text" autocomplete="off" name = "chatText" placeholder = "write a message" style = "width:100%;"/>
+          </form>
+        </div>
       </div>
 
     </div>
@@ -102,17 +110,16 @@
   </script>
   <script>
     "use strict";
+    document.getElementById('blank_home').style.display = '';
 
-    // window.addEventListener("load", function(){
-    //   tes112();
-    // });
-    // $(document).ready(function(){
-
-    // });
+    function showChatSection(){
+      document.getElementById('chat_section').style.display = '';
+      document.getElementById('blank_home').style.display = 'none';
+    }
 
     function getDataFromServer(friendID, accountID){
       $.ajax({
-        url: '/tes123',
+        url: '/get-client-data',
         type: 'get',
         data: { 
           friend_id : '' + friendID,
@@ -121,24 +128,18 @@
 
         success:function(dataServer){
           //console.log(dataServer);
-          //alert('success!');
-          setNewData(dataServer, accountID);
+          setNewData(dataServer, accountID, friendID);
         },
         error: function(){alert('error');}, 
       });  
-    }
-
-    function setMessageBlock($dataMessage){
-      
     }
 
     function getIdFromDataID(dta = ""){
       return dta.substr(5, 1);
     }
 
-    function setNewData(dta, thisUserId){
+    function setNewData(dta, thisUserId, thisUserFriendId){
       let chatData = JSON.parse(dta);
-      //console.log(typeof(chatData[0].sender_id));
       let lengthChatData = chatData.length;
       let y = 0;
       let dataInView = "";
@@ -151,6 +152,7 @@
       }
 
       document.getElementById('message-block').innerHTML = dataInView;
+      document.getElementById('formChat').setAttribute('name', thisUserFriendId);
       //console.log(lengthChatData);
     }
 
@@ -171,13 +173,41 @@
             //tes112(getIdFromDataID(target.getAttribute('id')));
             //console.log(getIdFromDataID(target.getAttribute('id')));
             //getAccountID();
+            showChatSection();
             getDataFromServer(getIdFromDataID(target.getAttribute('id')), getAccountID());
           }else{
             console.log('false');
           }
         }
       });
+
+      document.getElementById('formChat').addEventListener('submit', function(e){
+        e.preventDefault();
+        let friend_id = document.getElementById('formChat').getAttribute('name');
+        let chatData = document.forms['formChat']['chatText'].value;
+        sentChatAndGetNewDataFromServer(friend_id, getAccountID(), chatData);
+        //console.log(friend_id);
+      });
     });
+
+    function sentChatAndGetNewDataFromServer(friendID, accountID, chatText){
+      $.ajax({
+        url: '/send-and-get-new-data',
+        type: 'get',
+        data: { 
+          friend_id : friendID,
+          account_id: accountID, 
+          chatData: chatText
+        },
+
+        success:function(newData){
+          //console.log(newData);
+          setNewData(newData, accountID);
+        },
+        error: function(){alert('error');}, 
+      });  
+    }
+
     
   </script>
 </html>
