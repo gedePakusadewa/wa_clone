@@ -122,22 +122,36 @@
         success:function(dataServer){
           //console.log(dataServer);
           //alert('success!');
-          setNewData(dataServer);
+          setNewData(dataServer, accountID);
         },
         error: function(){alert('error');}, 
       });  
     }
 
     function setMessageBlock($dataMessage){
-
+      
     }
 
     function getIdFromDataID(dta = ""){
       return dta.substr(5, 1);
     }
 
-    function setNewData(dta){
-      document.getElementById('tes212').innerHTML = dta;
+    function setNewData(dta, thisUserId){
+      let chatData = JSON.parse(dta);
+      //console.log(typeof(chatData[0].sender_id));
+      let lengthChatData = chatData.length;
+      let y = 0;
+      let dataInView = "";
+      for(y = lengthChatData - 1; y >= 0; y--){
+        if(chatData[y].sender_id === parseInt(thisUserId)){
+          dataInView += '<div style = "text-align:right; background-color:red;">' + chatData[y].memo + '</div>';
+        }else{
+          dataInView += '<div style = "text-align:left; background-color:green;">' + chatData[y].memo + '</div>';
+        }
+      }
+
+      document.getElementById('message-block').innerHTML = dataInView;
+      //console.log(lengthChatData);
     }
 
     function getAccountID(){
