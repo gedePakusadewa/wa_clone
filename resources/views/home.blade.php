@@ -48,6 +48,10 @@
             width:400px;
         }
 
+        .tes12s{
+          display:flex; 
+          justify-content:flex-end;
+        }
     </style>
   </head>
   <body>
@@ -92,7 +96,7 @@
         </div>
       </div>
 
-      <div id = "chat_section" class = "fle-column" style = "display:none" >
+      <div id = "chat_section" class = "flex-column" style = "display:none" >
         <div id = "message-block">
         </div>
         <div style = "width:auto;padding:10px; background-color:#f0f0f0;">
@@ -145,9 +149,9 @@
       let dataInView = "";
       for(y = lengthChatData - 1; y >= 0; y--){
         if(chatData[y].sender_id === parseInt(thisUserId)){
-          dataInView += '<div style = "text-align:right; background-color:red;">' + chatData[y].memo + '</div>';
+          dataInView += "<div class = 'tes12s'><div>" + chatData[y].memo + "</div></div>";
         }else{
-          dataInView += '<div style = "text-align:left; background-color:green;">' + chatData[y].memo + '</div>';
+          dataInView += '<div style = "text-align:left; background-color:green;"><div style = "background-color:yellow;">' + chatData[y].memo + '</div></div>';
         }
       }
 
@@ -186,7 +190,7 @@
         let friend_id = document.getElementById('formChat').getAttribute('name');
         let chatData = document.forms['formChat']['chatText'].value;
         sentChatAndGetNewDataFromServer(friend_id, getAccountID(), chatData);
-        //console.log(friend_id);
+        console.log(friend_id);
       });
     });
 
@@ -202,7 +206,7 @@
 
         success:function(newData){
           //console.log(newData);
-          setNewData(newData, accountID);
+          setNewData(newData, accountID, friendID);
         },
         error: function(){alert('error');}, 
       });  
