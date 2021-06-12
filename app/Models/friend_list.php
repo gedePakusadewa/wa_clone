@@ -23,7 +23,7 @@ class friend_list extends Model
     }
 
     static function getFriendsOfOneAccount($account_id){
-        return friend_list::select('accounts.id', 'accounts.username')
+        return friend_list::select('accounts.id', 'accounts.username', 'accounts.path_img_profile')
                         ->join('accounts', 'friend_lists.friend_account_id', '=', 'accounts.id')
                         ->where('friend_lists.account_id', '=', $account_id)
                         ->get();
