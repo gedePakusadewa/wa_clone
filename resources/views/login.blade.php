@@ -18,7 +18,10 @@
     <div>
       <form action = "{{route('home_page')}}" method = "post" >
         <input type = "hidden" name = "_token" value = "<?php echo csrf_token(); ?>" />
-        <input type = "number" name = "userId" autocomplete = "off" />
+        <input type="text" placeholder="Email" id="email" class="form-control" name="email" required
+          autofocus />
+        <input type="password" placeholder="Password" id="password" class="form-control" name="password" required />
+        <button type="submit" class="btn btn-dark btn-block">Signin</button>
       </form>
     </div>
   </body>
