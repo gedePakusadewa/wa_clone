@@ -26,6 +26,13 @@ Route::fallback(function(){
 
 Route::get('/', function(){
     return view('login');
-});
+})->name('login');
+
+Route::get('/register', function(){
+    return view('register');
+})->name('register');
 
 Route::post('/set-user-id', [HomeController::class, 'getHomePage'])->name('home_page');
+Route::post('/save-user-data', [HomeController::class, 'customRegistration'])->name('save_registration');
+Route::post('/save-login-data', [HomeController::class, 'customLogin'])->name('save_login');
+Route::get('/log-out', [HomeController::class, 'signOut'])->name('log_out');

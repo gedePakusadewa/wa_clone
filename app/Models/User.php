@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'path_img_profile',
     ];
 
     /**
@@ -40,4 +41,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    static function getOneData($column, $keywords){
+        return User::where($column, "=", $keywords)->first();
+    }
 }

@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Accounts;
 use App\Models\Message;
 use App\Models\friend_list;
+use Hash;
+use Session;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -15,8 +19,8 @@ class HomeController extends Controller
         //Message::addSampleData();
         //friend_list::addSampleData();
         //var_dump(friend_list::getFriendsOfOneAccount(1));
-        $iduser = $request->input('userId');
-        return view('home', ['friendList' => friend_list::getFriendsOfOneAccount((int)$iduser), 'dataAccount' => Accounts::getOneData('id', $iduser)]);
+        // $iduser = $request->input('userId');
+        // return view('home', ['friendList' => friend_list::getFriendsOfOneAccount((int)$iduser), 'dataAccount' => Accounts::getOneData('id', $iduser)]);
         // foreach(Message::getAllMessageOneAccount(2,1) as $data){
         //     echo $data->sender_id."<br />";
         //     echo $data->memo."<br /><br />";
@@ -87,5 +91,55 @@ class HomeController extends Controller
         header('Content-Type: application/json');
         echo json_encode($newData);
     }
+
+    public function customLogin(Request $request)
+    {
+        // $request->validate([
+        //     'email' => 'required',
+        //     'password' => 'required',
+        // ]);
+   
+        $credentials = $request->only('email', 'password');
+        // Auth::attempt($credentials);
+        // var_dump(Auth::check());
+        if (Auth::attempt($credentials)) {
+            //return view('index', ['userId' => Auth::user()->id]);
+            //echo Auth::user()->id
+            return view('home', ['friendList' => friend_list::getFriendsOfOneAccount((int)Auth::user()->id), 'dataAccount' => User::getOneData('id', (int)Auth::user()->id)]);
+        }
+  
+        // return redirect("login");
+    }
+
+    public function create(array $data)
+    {
+      return User::create([
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'password' => Hash::make($data['password'])
+      ]);
+    } 
+
+    public function customRegistration(Request $request)
+    {  
+        // $request->validate([
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:users',
+        //     'password' => 'required|min:6',
+        // ]);
+           
+        $data = $request->all();
+        $check = $this->create($data);
+         
+        return redirect()->route('login');
+    }
+
+    public function signOut() {
+        Session::flush();
+        Auth::logout();
+  
+        return redirect()->route('login');
+    }
+
     
 }

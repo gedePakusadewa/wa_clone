@@ -16,13 +16,14 @@
   </head>
   <body>
     <div>
-      <form action = "{{route('home_page')}}" method = "post" >
+      <form action = "{{route('save_login')}}" method = "post" >
         <input type = "hidden" name = "_token" value = "<?php echo csrf_token(); ?>" />
         <input type="text" placeholder="Email" id="email" class="form-control" name="email" required
           autofocus />
         <input type="password" placeholder="Password" id="password" class="form-control" name="password" required />
         <button type="submit" class="btn btn-dark btn-block">Signin</button>
       </form>
+      <a href = "{{route('register')}}">REGISTER</a>
     </div>
   </body>
 </html>

@@ -73,7 +73,9 @@
           <div style = "background-color:#ededed;">
             <div style = "width:59px; padding:5px; ">
               <img style = "border-radius: 50%;" src = "{{$dataAccount->path_img_profile}}" width = "100px" />
-              <div id = "account-{{$dataAccount->id}}" class = "account-section">{{$dataAccount->username}}
+              <div id = "account-{{$dataAccount->id}}" class = "account-section">{{$dataAccount->name}}
+              </div>
+              <div><a href = "{{route('log_out')}}">SIGN OUT</a>
               </div>
             </div>
           </div>
@@ -89,7 +91,7 @@
                   <img id = "user-{{$data->id}}-img" style = "border-radius: 50%;" src = "{{$data->path_img_profile}}" width = "100px" />
                 </div>
                 <div class = "flex-column">
-                  <div id = "user-{{$data->id}}-username">{{$data->username}}
+                  <div id = "user-{{$data->id}}-username">{{$data->name}}
                   </div>
                   <div id = "user-{{$data->id}}-message" style = "font-weight:bold;">this feature on progress
                   </div>
