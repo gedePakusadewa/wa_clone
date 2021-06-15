@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+// use Illuminate\Http\Request;
+// use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +22,7 @@ Route::get('/get-client-data', [HomeController::class, 'sendDataChatToClient'])-
 
 Route::get('/send-and-get-new-data', [HomeController::class, 'saveAndSentNewDataToClient']);
 
-Route::fallback(function(){
-    return redirect()->route('home_page');
-});
+
 
 Route::get('/', function(){
     return view('login');
@@ -36,3 +36,20 @@ Route::post('/set-user-id', [HomeController::class, 'getHomePage'])->name('home_
 Route::post('/save-user-data', [HomeController::class, 'customRegistration'])->name('save_registration');
 Route::post('/save-login-data', [HomeController::class, 'customLogin'])->name('save_login');
 Route::get('/log-out', [HomeController::class, 'signOut'])->name('log_out');
+
+Route::post('/notif-to-client', [HomeController::class, 'notifToClient']);
+// Route::post('/notif-to-client', function(Request $request){
+//     event(
+//         new Notice(
+//             $request->input('targetId')
+//             //"1"
+//         )
+//     );
+//     return ['success' => "router"];
+// });
+
+
+
+Route::fallback(function(){
+    return redirect()->route('home_page');
+});

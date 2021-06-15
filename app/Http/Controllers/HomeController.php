@@ -10,6 +10,7 @@ use Hash;
 use Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Events\Notice;
 
 class HomeController extends Controller
 {
@@ -90,6 +91,30 @@ class HomeController extends Controller
         $newData = Message::getAllMessageOneAccount($_GET['friend_id'], $_GET['account_id']);
         header('Content-Type: application/json');
         echo json_encode($newData);
+    }
+
+    public function notifToClient(Request $request){
+        $dtaJSON = json_decode($request->targetId);
+        // $tes = new Notice($request->targetId);
+        // $tes->id = $request->targetId;
+        // $dta = "1";
+        $account = Accounts::getOneData('id', $dtaJSON);
+        event(
+            new Notice(
+                //$request->input('targetId')
+                $account
+                //$_POST['targetId']
+                //data['targetId']
+                //$dtaJSON->targetId
+                //$tes
+                //strval($dtaJSON)
+                //'2'
+            )
+        );
+        // $newData = "goblok lu";
+        // header('Content-Type: application/json');
+        // echo json_encode($newData);
+        return ['success' => $account];
     }
 
     public function customLogin(Request $request)
