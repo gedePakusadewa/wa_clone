@@ -16,7 +16,7 @@
   </head>
   <body>
     <div>
-      <form action = "{{route('save_login')}}" method = "post" >
+      <form action = "{{route('validate_login')}}" method = "post" >
         <input type = "hidden" name = "_token" value = "<?php echo csrf_token(); ?>" />
         <input type="text" placeholder="Email" id="email" class="form-control" name="email" required
           autofocus />

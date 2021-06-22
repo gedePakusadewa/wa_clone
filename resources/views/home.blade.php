@@ -96,6 +96,8 @@
                   <div id = "user-{{$data->id}}-message" style = "font-weight:bold;">this feature on progress
                   </div>
                 </div>
+                <div id = "user-{{$data->id}}-notif-section">
+                </div>
               </div>
             @endforeach
           </div>
@@ -111,6 +113,9 @@
       </div>
 
       <div id = "chat_section" class = "flex-column" style = "display:none; height:600px; overflow:auto;  background-image:url('bg-img/default.jpg')" >
+        <div id = "inner-notification" style  = "position:absolute; background-color:red; display:none;">
+          New Message
+        </div>
         <div id = "message-block" style = "margin-bottom:40px;">
         </div>
         <div style = "width:1090px; padding:10px; background-color:#f0f0f0; position:fixed; bottom:0;" class = "flex-row">

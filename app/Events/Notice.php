@@ -18,19 +18,21 @@ class Notice implements ShouldBroadcast
 
     //public $totalMessage;
     //public $targetId;
-    //public $targetUser;
-    public $targetTmp;
+    public $targetUser;
+    public $senderUser;
+    //public $targetTmp;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Accounts $targetTmp)
+    public function __construct(User $targetUser, User $senderUser)
     {
         //$this->totalMessage = $totalMessage;
         //$this->targetId = $targetId;
-        $this->targetTmp = $targetTmp;
+        $this->targetUser = $targetUser->id;
+        $this->senderUser = $senderUser->id;
     }
 
     /**
@@ -40,7 +42,7 @@ class Notice implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('notificat.'.$this->targetTmp->id);
+        return new PrivateChannel('notificat.'.$this->targetUser);
     }
 
     public function broadcastAs(){

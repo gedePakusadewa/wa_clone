@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 // use Illuminate\Http\Request;
 // use Illuminate\Http\Response;
+// use Session;
+// use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,15 +18,9 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-//Route::get('/home', [HomeController::class, 'getHomePage'])->name('home_page');
+Route::get('/', [HomeController::class, 'getHomepage'])->name('homepage');
 
-Route::get('/get-client-data', [HomeController::class, 'sendDataChatToClient'])->name('get_client_data');
-
-Route::get('/send-and-get-new-data', [HomeController::class, 'saveAndSentNewDataToClient']);
-
-
-
-Route::get('/', function(){
+Route::get('/login', function(){
     return view('login');
 })->name('login');
 
@@ -32,24 +28,17 @@ Route::get('/register', function(){
     return view('register');
 })->name('register');
 
-Route::post('/set-user-id', [HomeController::class, 'getHomePage'])->name('home_page');
-Route::post('/save-user-data', [HomeController::class, 'customRegistration'])->name('save_registration');
-Route::post('/save-login-data', [HomeController::class, 'customLogin'])->name('save_login');
+Route::post('/save-user-data', [HomeController::class, 'validateAndSaveRegistrationData'])->name('save_registration');
+Route::post('/validate-login-data', [HomeController::class, 'loginValidation'])->name('validate_login');
+
+Route::get('/get-chat-data-from-friend-id', [HomeController::class, 'getDataChat'])->name('get_client_data');
+
+Route::get('/save-and-get-latest-data', [HomeController::class, 'saveDataAndGetLatestData']);
+
+Route::post('/set-and-send-new-notification', [HomeController::class, 'setAndSendNewNotification']);
+
 Route::get('/log-out', [HomeController::class, 'signOut'])->name('log_out');
 
-Route::post('/notif-to-client', [HomeController::class, 'notifToClient']);
-// Route::post('/notif-to-client', function(Request $request){
-//     event(
-//         new Notice(
-//             $request->input('targetId')
-//             //"1"
-//         )
-//     );
-//     return ['success' => "router"];
-// });
-
-
-
 Route::fallback(function(){
-    return redirect()->route('home_page');
+    return redirect()->route('login');
 });

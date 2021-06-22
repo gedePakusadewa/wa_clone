@@ -24,7 +24,7 @@
         <input type="password" placeholder="Password" id="password" name="password" required />
         <button type="submit" >Sign up</button>
     </form>
-    <a href = "{{route('login')}}">LOGIN</a>
+    <a href = "{{route('validate_login')}}">LOGIN</a>
     </div>
   </body>
 </html>

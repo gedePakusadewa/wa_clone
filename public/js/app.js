@@ -1840,9 +1840,15 @@ module.exports = {
   \*****************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
+var _require = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"),
+    entries = _require.entries;
+
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 "use strict";
+/* set main chat section blank when user dont click any
+chat friend */
+
 
 document.getElementById('blank_home').style.display = '';
 
@@ -1850,10 +1856,13 @@ function showChatSection() {
   document.getElementById('chat_section').style.display = '';
   document.getElementById('blank_home').style.display = 'none';
 }
+/* get data chat from specific user(accountID) dan his/her specific friend(friendID) based 
+on their id. Then set new data for chat section. */
+
 
 function getDataFromServer(friendID, accountID) {
   $.ajax({
-    url: '/get-client-data',
+    url: '/get-chat-data-from-friend-id',
     type: 'get',
     data: {
       friend_id: '' + friendID,
@@ -1867,15 +1876,19 @@ function getDataFromServer(friendID, accountID) {
       alert('error');
     }
   });
-}
+} //get id from id element in html object
+
 
 function getIdFromDataID() {
   var dta = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   return dta.substr(5, 1);
 }
+/* set new data or change the entire data conversation in currently 
+open chat section. Delete notification number in friend section.*/
+
 
 function setNewData(dta, thisUserId, thisUserFriendId) {
-  var chatData = JSON.parse(dta);
+  var chatData = dta;
   var lengthChatData = chatData.length;
   var y = 0;
   var dataInView = "";
@@ -1889,64 +1902,74 @@ function setNewData(dta, thisUserId, thisUserFriendId) {
   }
 
   document.getElementById('message-block').innerHTML = dataInView;
-  document.getElementById('formChat').setAttribute('name', thisUserFriendId); //console.log(lengthChatData);
-}
+  document.getElementById('formChat').setAttribute('name', thisUserFriendId);
+  deleteNewNotificationSideBar(document.getElementById('formChat').getAttribute('name'));
+} //get owner ID of currently account/user chat
+
 
 function getAccountID() {
-  //console.log(document.getElementsByClassName('account-section')[0].getAttribute('id').substr(8, 1));
   return document.getElementsByClassName('account-section')[0].getAttribute('id').substr(8, 1);
-}
+} //invoke some necessary function if page done loading
+
 
 window.addEventListener("load", function () {
+  /* when user click ne of his/her friend section
+  then this function hide black display and generate
+  new chat section based on user ID and friend ID */
   document.body.addEventListener('click', function (e) {
-    var target = e.target; //alert(e.currentTarget.getAttribute('id'));
-    //console.log(e.target.getAttribute('id'));
-    //e.stopPropagation();
+    var target = e.target;
 
     if (target.getAttribute('id') !== null) {
       if (target.getAttribute('id').includes('user-')) {
-        //console.log(typeof(target.getAttribute('id')));
-        //tes112(getIdFromDataID(target.getAttribute('id')));
-        //console.log(getIdFromDataID(target.getAttribute('id')));
-        //getAccountID();
         showChatSection();
         getDataFromServer(getIdFromDataID(target.getAttribute('id')), getAccountID());
       } else {
-        console.log('false');
+        console.log('Something Wrong When Displaying User Chat');
       }
     }
   });
+  /*  when user send something to currently open chat section friend
+   this function sent new data chat to server and refresh currently chat section
+   page whenever user click enter. This function also send data to server using
+   axios (and i am still reserch why i do this) */
+
   document.getElementById('formChat').addEventListener('submit', function (e) {
     e.preventDefault();
     var friend_id = document.getElementById('formChat').getAttribute('name');
     var chatData = document.forms['formChat']['chatText'].value;
-    sentChatAndGetNewDataFromServer(friend_id, getAccountID(), chatData); //console.log(friend_id);
+    sendNewDataChatAndGetLastestChatData(friend_id, getAccountID(), chatData); //console.log(friend_id);
 
     document.forms['formChat']['chatText'].value = "";
     var options = {
       method: 'post',
-      url: '/notif-to-client',
+      url: '/set-and-send-new-notification',
       data: {
-        // username: username_input.value,
-        // message: message_input.value,
-        targetId: friend_id
+        targetId: friend_id,
+        senderId: getAccountID()
       }
     };
-    axios(options); //console.log(friend_id);
+    axios(options);
   }); //nilai id harus interger
   //pastikan melakukan config: cache ; config: clear ; route: cache ; route: clear ; optimize
 
-  window.Echo["private"]('notificat.' + getAccountID()).listen('.notif', function (e) {//messages_el.innerHTML += '<div><strong>' + e.username + ':</strong>' + e.message + '</div>';
-    //console.log(e);
-  }); // window.Echo.private('notificat.4').listen('.notif', (e) => {
-  // 	messages_el.innerHTML += '<div><strong>' + e.username + ':</strong>' + e.message + '</div>';
-  // 	//console.log(e);
-  // }); 
-});
+  /* to listening channel from server continuously when page done loading. Its listen using
+  user ID to help server distinguish who is listening and do they can listen or not
+  This function also refresh chat section when user already on chat section not in blank page */
 
-function sentChatAndGetNewDataFromServer(friendID, accountID, chatText) {
+  window.Echo["private"]('notificat.' + getAccountID()).listen('.notif', function (e) {
+    //console.log(e);
+    notification(e.senderUser, e.targetUser);
+    var friend_id = document.getElementById('formChat').getAttribute('name');
+
+    if (friend_id !== "") {
+      getDataFromServer(friend_id, getAccountID());
+    }
+  });
+}); //send and receive the latest data conversation from server
+
+function sendNewDataChatAndGetLastestChatData(friendID, accountID, chatText) {
   $.ajax({
-    url: '/send-and-get-new-data',
+    url: '/save-and-get-latest-data',
     type: 'get',
     data: {
       friend_id: friendID,
@@ -1961,6 +1984,37 @@ function sentChatAndGetNewDataFromServer(friendID, accountID, chatText) {
       alert('error');
     }
   });
+}
+/* some function to display, and delete notification
+whenever user get new message, these function will
+make new notification number (1), and if user is in
+one of his/her friend chat section that these function
+will display notification inside chat section */
+
+
+function notification(senderId, targetId) {
+  if (document.getElementById('formChat').getAttribute('name') === senderId.toString()) {
+    setNewNotificationMain(senderId);
+    setTimeout(deleteNewNotificationMainBar, 3000);
+  } else {
+    setNewNotificationSideBar(senderId);
+  }
+}
+
+function setNewNotificationSideBar(senderId) {
+  document.getElementById('user-' + senderId + '-notif-section').innerHTML = "1";
+}
+
+function setNewNotificationMain(senderId) {
+  document.getElementById('inner-notification').style.display = "";
+}
+
+function deleteNewNotificationSideBar(senderId) {
+  document.getElementById('user-' + senderId + '-notif-section').innerHTML = "";
+}
+
+function deleteNewNotificationMainBar() {
+  document.getElementById('inner-notification').style.display = "none";
 }
 
 /***/ }),
